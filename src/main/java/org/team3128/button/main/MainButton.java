@@ -61,12 +61,16 @@ import java.io.OutputStream;
     // - Mason Holst, "Helpful Reminders", published November 2019
 
 public class MainButton extends NarwhalRobot {
-
+    public Joystick joystick;
+    public ListenerManager lm;
+    public MotorGroup myMotor;
 
 	@Override
 	protected void constructHardware()
 	{
-
+        joystick = new Joystick(1);
+		lm = new ListenerManager(joystick);
+        addListenerManager(lm);
     }
     
     @Override
@@ -75,6 +79,11 @@ public class MainButton extends NarwhalRobot {
 
 	@Override
 	protected void setupListeners() {
+        lm.nameControl(new Button(1), "name");
+        lm.addButtonUpListener("name", () ->
+        {
+            myMotor.set(ControlMode.PercentOutput, 100);
+        }
 
     }
 
