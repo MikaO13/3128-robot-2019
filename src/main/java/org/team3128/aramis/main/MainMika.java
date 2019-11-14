@@ -77,6 +77,11 @@ public class MainMika extends NarwhalRobot {
         tankDrive = SRXTankDrive.getInstance();
         dcr = new DriveCommandRunning();
 
+        leftLeader.setInverted(false);
+        leftFollower.setInverted(false);
+        rightLeader.setInverted(true);
+        rightFollower.setInverted(true);
+
     }
     
     @Override
