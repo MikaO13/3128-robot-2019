@@ -66,11 +66,11 @@ public class MainMika extends NarwhalRobot {
 		lm = new ListenerManager(joystick);
         addListenerManager(lm);
         
-        leftLeader = new TalonSRX(15);
-        leftFollower = new VictorSPX(16);
+        leftLeader = new TalonSRX(13);
+        leftFollower = new VictorSPX(5);
 
-        rightLeader = new TalonSRX(10);
-        rightFollower = new VictorSPX(11);
+        rightLeader = new TalonSRX(15);
+        rightFollower = new VictorSPX(6);
         leftFollower.set(ControlMode.Follower, leftLeader.getDeviceID());
         rightFollower.set(ControlMode.Follower, rightLeader.getDeviceID());
         SRXTankDrive.initialize(leftLeader, rightLeader, 13.21*Length.in, 32.3*Length.in, 3700);
@@ -100,15 +100,6 @@ public class MainMika extends NarwhalRobot {
             }
 			
         }, "MoveTurn", "MoveForwards", "Throttle");
-        lm.nameControl(new Button(3), "button3");
-        lm.addButtonDownListener("button3", () ->
-        {
-            // some thing that i want to do here
-        }
-        lm.addButtonUpListener("button3", () ->
-        {
-            // some thing that i want to do here
-        }
     }
 
     @Override
