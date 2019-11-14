@@ -51,7 +51,6 @@ import java.io.OutputStream;
 public class MainMika extends NarwhalRobot {
     public Joystick joystick;
     public ListenerManager lm;
-    private DriveCommandRunning dcr;
     public SRXTankDrive tankDrive;
 
     public TalonSRX leftLeader;
@@ -71,16 +70,17 @@ public class MainMika extends NarwhalRobot {
 
         rightLeader = new TalonSRX(15);
         rightFollower = new VictorSPX(6);
-        leftFollower.set(ControlMode.Follower, leftLeader.getDeviceID());
-        rightFollower.set(ControlMode.Follower, rightLeader.getDeviceID());
-        SRXTankDrive.initialize(leftLeader, rightLeader, 13.21*Length.in, 32.3*Length.in, 3700);
-        tankDrive = SRXTankDrive.getInstance();
-        dcr = new DriveCommandRunning();
 
         leftLeader.setInverted(false);
         leftFollower.setInverted(false);
         rightLeader.setInverted(true);
         rightFollower.setInverted(true);
+        
+        leftFollower.set(ControlMode.Follower, leftLeader.getDeviceID());
+        rightFollower.set(ControlMode.Follower, rightLeader.getDeviceID());
+        SRXTankDrive.initialize(leftLeader, rightLeader, 13.21*Length.in, 32.3*Length.in, 3700);
+
+        tankDrive = SRXTankDrive.getInstance();
 
     }
     
@@ -95,14 +95,12 @@ public class MainMika extends NarwhalRobot {
 		lm.nameControl(ControllerExtreme3D.THROTTLE, "Throttle");		
 
         lm.addMultiListener(() -> {
-            if (!dcr.isRunning) {
-                tankDrive.arcadeDrive(
-                    -0.7 * RobotMath.thresh(lm.getAxis("MoveTurn"), 0.1),
-                    -1.0 * RobotMath.thresh(lm.getAxis("MoveForwards"), 0.1),
-                    -1.0 * lm.getAxis("Throttle"),
-                     true
-                );
-            }
+            tankDrive.arcadeDrive(
+                -0.7 * RobotMath.thresh(lm.getAxis("MoveTurn"), 0.1),
+                -1.0 * RobotMath.thresh(lm.getAxis("MoveForwards"), 0.1),
+                -1.0 * lm.getAxis("Throttle"),
+                 true
+            );
 			
         }, "MoveTurn", "MoveForwards", "Throttle");
     }
