@@ -1,19 +1,9 @@
-//AUTHORSES:
-    //MASON HOLST
-    //jude
-    //caylin
-    //daniel
-    //tyler
-    //teo
-
-
-    //not adham :/
-
 package org.team3128.button.main;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import org.team3128.athos.autonomous.*;
 import org.team3128.athos.util.PrebotDeepSpaceConstants;
@@ -63,28 +53,58 @@ import java.io.OutputStream;
 public class MainButton extends NarwhalRobot {
     public Joystick joystick;
     public ListenerManager lm;
-    public MotorGroup myMotor;
+    public SRXTankDrive tankDrive;
+
+    public TalonSRX leftLeader;
+    public VictorSPX leftFollower;
+    public TalonSRX rightLeader;
+    public VictorSPX rightFollower;
 
 	@Override
 	protected void constructHardware()
 	{
-        joystick = new Joystick(1);
+        joystick = new Joystick(0);
 		lm = new ListenerManager(joystick);
         addListenerManager(lm);
+        
+        leftLeader = new TalonSRX(13);
+        leftFollower = new VictorSPX(5);
+
+        rightLeader = new TalonSRX(15);
+        rightFollower = new VictorSPX(6);
+
+        leftLeader.setInverted(false);
+        leftFollower.setInverted(false);
+        rightLeader.setInverted(true);
+        rightFollower.setInverted(true);
+        
+        leftFollower.set(ControlMode.Follower, leftLeader.getDeviceID());
+        rightFollower.set(ControlMode.Follower, rightLeader.getDeviceID());
+        SRXTankDrive.initialize(leftLeader, rightLeader, 13.21*Length.in, 32.3*Length.in, 3700);
+
+        tankDrive = SRXTankDrive.getInstance();
     }
     
     @Override
     protected void constructAutoPrograms() {
+
     }
 
 	@Override
 	protected void setupListeners() {
-        lm.nameControl(new Button(1), "name");
-        lm.addButtonUpListener("name", () ->
-        {
-            myMotor.set(ControlMode.PercentOutput, 100);
-        }
+        lm.nameControl(ControllerExtreme3D.TWIST, "MoveTurn");
+		lm.nameControl(ControllerExtreme3D.JOYY, "MoveForwards");
+		lm.nameControl(ControllerExtreme3D.THROTTLE, "Throttle");		
 
+        lm.addMultiListener(() -> {
+            tankDrive.arcadeDrive(
+                -0.7 * RobotMath.thresh(lm.getAxis("MoveTurn"), 0.1),
+                -1.0 * RobotMath.thresh(lm.getAxis("MoveForwards"), 0.1),
+                -1.0 * lm.getAxis("Throttle"),
+                 true
+            );
+			
+        }, "MoveTurn", "MoveForwards", "Throttle");
     }
 
     @Override
