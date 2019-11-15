@@ -1,3 +1,5 @@
+package org.team3128.aramis.main;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -81,14 +83,14 @@ public class MainMika extends NarwhalRobot {
         SRXTankDrive.initialize(leftLeader, rightLeader, 13.21*Length.in, 32.3*Length.in, 3700);
 
         tankDrive = SRXTankDrive.getInstance();
-
     }
     
     @Override
     protected void constructAutoPrograms() {
+
     }
 
-    @Override
+	@Override
 	protected void setupListeners() {
         lm.nameControl(ControllerExtreme3D.TWIST, "MoveTurn");
 		lm.nameControl(ControllerExtreme3D.JOYY, "MoveForwards");
