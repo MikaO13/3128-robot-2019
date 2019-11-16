@@ -87,7 +87,7 @@ public class MainMika extends NarwhalRobot {
     
     @Override
     protected void constructAutoPrograms() {
-
+        
     }
 
 	@Override
