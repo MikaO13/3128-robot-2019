@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -47,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+
 //start typing the stuff to make this a robot that isn't non-functional and bad and blank and boring and stuff thanks lol
     // - Mason Holst, "Helpful Reminders", published November 2019
 
@@ -59,6 +61,8 @@ public class MainMika extends NarwhalRobot {
     public VictorSPX leftFollower;
     public TalonSRX rightLeader;
     public VictorSPX rightFollower;
+
+    public Command autoCommand;
 
 	@Override
 	protected void constructHardware()
@@ -94,7 +98,7 @@ public class MainMika extends NarwhalRobot {
 	protected void setupListeners() {
         lm.nameControl(ControllerExtreme3D.TWIST, "MoveTurn");
 		lm.nameControl(ControllerExtreme3D.JOYY, "MoveForwards");
-		lm.nameControl(ControllerExtreme3D.THROTTLE, "Throttle");		
+        lm.nameControl(ControllerExtreme3D.THROTTLE, "Throttle");	
 
         lm.addMultiListener(() -> {
             tankDrive.arcadeDrive(
@@ -105,6 +109,12 @@ public class MainMika extends NarwhalRobot {
             );
 			
         }, "MoveTurn", "MoveForwards", "Throttle");
+
+        lm.nameControl(new Button(2), "AutoButton");
+        lm.addButtonUpListener("AutoButton", () -> {
+            autoCommand = new MikaAuto();
+            autoCommand.start();
+        });
     }
 
     @Override
