@@ -84,6 +84,13 @@ public class MainMika extends NarwhalRobot {
         
         leftFollower.set(ControlMode.Follower, leftLeader.getDeviceID());
         rightFollower.set(ControlMode.Follower, rightLeader.getDeviceID());
+
+        leftLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.CAN_TIMEOUT);
+        leftFollower.follow(leftLeader);
+
+        rightLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.CAN_TIMEOUT);
+        rightFollower.follow(rightLeader);
+
         SRXTankDrive.initialize(leftLeader, rightLeader, 13.21*Length.in, 32.3*Length.in, 3700);
 
         tankDrive = SRXTankDrive.getInstance();
@@ -115,6 +122,18 @@ public class MainMika extends NarwhalRobot {
             autoCommand = new MikaAuto();
             autoCommand.start();
         });
+
+        lm.nameControl(new Button(3),   "ObstactleAuto");
+        lm.addButtonUpListener("ObstactleAuto", () -> {
+            autoCommand = new ObstactleCourseAuto();
+            autoCommand.start();
+        });
+
+        lm.nameControl(new Button(4),   "Maze2Auto");
+        lm.addButtonUpListener("Maze2Auto", () -> {
+            autoCommand = new Maze2Auto();
+            autoCommand.start();
+        });
     }
 
     @Override
@@ -127,7 +146,7 @@ public class MainMika extends NarwhalRobot {
     }
 
 
-    public static void main(String... args) {
+    public static void main(final String... args) {
         RobotBase.startRobot(MainMika::new);
     }
 }
